@@ -1,0 +1,46 @@
+<!-- PCLA Together We Glow takeover v1.0.0. Paste in Site settings, Custom code, Footer code. Not a registered script.
+     The release tag (@v1.0.0) appears three times: the stylesheet link, the base constant for the photos, and the script tag. Change all three together.
+     Off switch: disabled: true stops the script before it loads anything. Roll back: change the tag.
+     GA4: nothing to set up here. If the site's gtag exists, the script sends twg_takeover_open (trigger), twg_takeover_dismiss (method) and twg_takeover_give, each with campaign twg-2026. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/shaimoom/pcla-together-we-glow@v1.0.0/twg-takeover.min.css">
+<script>
+(function () {
+  var base = 'https://cdn.jsdelivr.net/gh/shaimoom/pcla-together-we-glow@v1.0.0/photos/';
+  /* file, event (cap key, at most 2 in the ring), series and people (never on two consecutive planes) */
+  var photos = [
+    ['twg-04.jpg', 'la-big-5k', 'la-big-5k', []],
+    ['twg-05.jpg', 'la-big-5k', 'la-big-5k', []],
+    ['twg-06.jpg', 'la-big-5k', 'la-big-5k', ['warm-up-leader']],
+    ['twg-07.jpg', 'taco-night', 'taco-night', []],
+    ['twg-08.jpg', 'gallery-2025', 'gallery', []],
+    ['twg-09.jpg', 'laughing-matters', 'laughing-matters', []],
+    ['twg-10.jpg', 'thrive-with-five-2025', 'thrive-with-five', []],
+    ['twg-11.jpg', 'thrive-with-five-2025', 'thrive-with-five', []],
+    ['twg-12.jpg', 'lunch-and-learn-2025-07', 'lunch-and-learn', []],
+    ['twg-13.jpg', 'lunch-and-learn-2025-07', 'lunch-and-learn', []],
+    ['twg-14.jpg', 'lunch-and-learn-2025-11', 'lunch-and-learn', []],
+    ['twg-15.jpg', 'lunch-and-learn-2026-03', 'lunch-and-learn', []],
+    ['twg-16.jpg', 'lunch-and-learn-2026-03', 'lunch-and-learn', []],
+    ['twg-17.jpg', 'lunch-and-learn-2026-07', 'lunch-and-learn', []],
+    ['twg-20.jpg', 'taco-night', 'taco-night', ['bill-plaschke']],
+    ['twg-22.jpg', 'laughing-matters', 'laughing-matters', ['comedian']],
+    ['twg-23.jpg', 'laughing-matters', 'laughing-matters', []],
+    ['twg-24.jpg', 'lunch-and-learn-2026-09', 'lunch-and-learn', []],
+    ['twg-25.jpg', 'thrive-with-five-2026', 'thrive-with-five', []],
+    ['twg-26.jpg', 'la-big-5k', 'la-big-5k', ['pink-haired-woman']],
+    ['twg-27.jpg', 'la-big-5k', 'la-big-5k', ['pink-haired-woman', 'warm-up-leader']],
+    ['twg-28.jpg', 'gallery-2025', 'gallery', []],
+    ['twg-29.jpg', 'laughing-matters', 'laughing-matters', ['comedian']]
+  ];
+  window.TWG_TAKEOVER_CONFIG = {
+    disabled: false,
+    mockup: false,
+    giveUrl: 'https://givebutter.com/pcla-together-we-glow-2026',
+    startUtc: Date.UTC(2026, 10, 1, 7, 0, 0), /* Sunday, November 1, 2026, 12:00 AM Pacific */
+    endUtc: Date.UTC(2027, 0, 1, 8, 0, 0), /* Friday, January 1, 2027, 12:00 AM Pacific; the window closes Thursday, December 31, 11:59 PM */
+    photos: photos.map(function (p) { return { src: base + p[0], event: p[1], series: p[2], people: p[3] }; })
+  };
+  if (window.TWG_TAKEOVER_CONFIG.disabled) { window.TWG_TAKEOVER_CONFIG.endUtc = 0; }
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/gh/shaimoom/pcla-together-we-glow@v1.0.0/twg-takeover.min.js"></script>
