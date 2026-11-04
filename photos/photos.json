@@ -1,0 +1,250 @@
+{
+  "note": "Pool photos for the PCLA Together We Glow takeover v1.0.0. 800px longest edge, JPEG quality 0.8 (twg-04 at 0.72), no metadata. event: the cap key, at most maxPerEvent (2) in the ring. series and people: never on two consecutive planes. Same tags as embed/webflow-footer.html. Left out of the pool on purpose: twg-01, 02, 03, 19 (legible name tags), twg-18 (Bill Plaschke appears once, in twg-20), twg-21 (drinks photo, out on Shai's round 7 note).",
+  "count": 23,
+  "totalBytes": 1477664,
+  "photos": [
+    {
+      "file": "twg-04.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 108580,
+      "event": "la-big-5k",
+      "series": "la-big-5k",
+      "people": []
+    },
+    {
+      "file": "twg-05.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 67854,
+      "event": "la-big-5k",
+      "series": "la-big-5k",
+      "people": []
+    },
+    {
+      "file": "twg-06.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 63881,
+      "event": "la-big-5k",
+      "series": "la-big-5k",
+      "people": [
+        "warm-up-leader"
+      ]
+    },
+    {
+      "file": "twg-07.jpg",
+      "width": 800,
+      "height": 534,
+      "orientation": "landscape",
+      "bytes": 73589,
+      "event": "taco-night",
+      "series": "taco-night",
+      "people": []
+    },
+    {
+      "file": "twg-08.jpg",
+      "width": 800,
+      "height": 360,
+      "orientation": "landscape",
+      "bytes": 61889,
+      "event": "gallery-2025",
+      "series": "gallery",
+      "people": []
+    },
+    {
+      "file": "twg-09.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 70146,
+      "event": "laughing-matters",
+      "series": "laughing-matters",
+      "people": []
+    },
+    {
+      "file": "twg-10.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 75823,
+      "event": "thrive-with-five-2025",
+      "series": "thrive-with-five",
+      "people": []
+    },
+    {
+      "file": "twg-11.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 51674,
+      "event": "thrive-with-five-2025",
+      "series": "thrive-with-five",
+      "people": []
+    },
+    {
+      "file": "twg-12.jpg",
+      "width": 533,
+      "height": 800,
+      "orientation": "portrait",
+      "bytes": 46511,
+      "event": "lunch-and-learn-2025-07",
+      "series": "lunch-and-learn",
+      "people": []
+    },
+    {
+      "file": "twg-13.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 65093,
+      "event": "lunch-and-learn-2025-07",
+      "series": "lunch-and-learn",
+      "people": []
+    },
+    {
+      "file": "twg-14.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 66709,
+      "event": "lunch-and-learn-2025-11",
+      "series": "lunch-and-learn",
+      "people": []
+    },
+    {
+      "file": "twg-15.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 39585,
+      "event": "lunch-and-learn-2026-03",
+      "series": "lunch-and-learn",
+      "people": []
+    },
+    {
+      "file": "twg-16.jpg",
+      "width": 533,
+      "height": 800,
+      "orientation": "portrait",
+      "bytes": 37114,
+      "event": "lunch-and-learn-2026-03",
+      "series": "lunch-and-learn",
+      "people": []
+    },
+    {
+      "file": "twg-17.jpg",
+      "width": 533,
+      "height": 800,
+      "orientation": "portrait",
+      "bytes": 40810,
+      "event": "lunch-and-learn-2026-07",
+      "series": "lunch-and-learn",
+      "people": []
+    },
+    {
+      "file": "twg-20.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 51678,
+      "event": "taco-night",
+      "series": "taco-night",
+      "people": [
+        "bill-plaschke"
+      ]
+    },
+    {
+      "file": "twg-22.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 81462,
+      "event": "laughing-matters",
+      "series": "laughing-matters",
+      "people": [
+        "comedian"
+      ]
+    },
+    {
+      "file": "twg-23.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 79139,
+      "event": "laughing-matters",
+      "series": "laughing-matters",
+      "people": []
+    },
+    {
+      "file": "twg-24.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 61230,
+      "event": "lunch-and-learn-2026-09",
+      "series": "lunch-and-learn",
+      "people": []
+    },
+    {
+      "file": "twg-25.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 58891,
+      "event": "thrive-with-five-2026",
+      "series": "thrive-with-five",
+      "people": []
+    },
+    {
+      "file": "twg-26.jpg",
+      "width": 533,
+      "height": 800,
+      "orientation": "portrait",
+      "bytes": 60879,
+      "event": "la-big-5k",
+      "series": "la-big-5k",
+      "people": [
+        "pink-haired-woman"
+      ]
+    },
+    {
+      "file": "twg-27.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 73215,
+      "event": "la-big-5k",
+      "series": "la-big-5k",
+      "people": [
+        "pink-haired-woman",
+        "warm-up-leader"
+      ]
+    },
+    {
+      "file": "twg-28.jpg",
+      "width": 800,
+      "height": 360,
+      "orientation": "landscape",
+      "bytes": 64145,
+      "event": "gallery-2025",
+      "series": "gallery",
+      "people": []
+    },
+    {
+      "file": "twg-29.jpg",
+      "width": 800,
+      "height": 533,
+      "orientation": "landscape",
+      "bytes": 77767,
+      "event": "laughing-matters",
+      "series": "laughing-matters",
+      "people": [
+        "comedian"
+      ]
+    }
+  ]
+}
