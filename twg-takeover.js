@@ -33,6 +33,7 @@
    * @property {number} endUtc            First instant after the campaign (ms since epoch)
    * @property {RegExp[]} skipPaths       Paths that never show it
    * @property {string} giveUrl           Donate link, opens in a new tab
+   * @property {string} ga4MeasurementId  GA4 property for the three events when the page has no window.gtag (pcla.org loads GA4 through GTM). Empty string: dataLayer and gtag.js are left alone
    * @property {string} threeUrl          Pinned three.js module build
    * @property {TwgPhoto[]} photos        Film strip photos. Empty list: placeholders
    * @property {number} maxPerEvent       Most photos from one event in the ring
@@ -62,6 +63,7 @@
     endUtc: Date.UTC(2027, 0, 1, 8, 0, 0),      // Friday, January 1, 2027, 12:00 AM Pacific (PST); the window closes Thursday, December 31, 11:59 PM
     skipPaths: [/^\/(?:es\/|ko\/)?give\/?$/],   // /give and its Weglot translations
     giveUrl: 'https://givebutter.com/pcla-together-we-glow-2026',
+    ga4MeasurementId: 'G-SY32NGPX37',
     threeUrl: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js',
     photos: [],
     maxPerEvent: 2,
@@ -135,10 +137,36 @@
     try { window.localStorage.setItem(CONFIG.storageKey, JSON.stringify({ until: until, reason: reason })); } catch (e) { /* cookie below */ }
     document.cookie = CONFIG.storageKey + '=' + until + '; expires=' + new Date(until).toUTCString() + '; path=/; SameSite=Lax' + (window.location.protocol === 'https:' ? '; Secure' : '');
   }
-  /** @param {string} name @param {Record<string, string>} params */
+  /**
+   * The three GA4 events. If the page already has window.gtag, it is used as is. Otherwise (pcla.org loads GA4 through
+   * GTM and never defines gtag) each event is pushed to dataLayer as an object event with twg_ keys, for GTM to catch, and
+   * on the first event gtag.js is loaded once for the configured property with the standard shim, js and config calls,
+   * send_page_view false so it never counts a page view next to GTM's own GA4 tag; the events then go through gtag with
+   * the same names and params. Only ever called from the open path, so nothing loads when the takeover does not open. If
+   * gtag.js fails to load, the events stay in dataLayer only
+   * @param {string} name @param {Record<string, string>} params
+   */
+  var ownGtag = false;
   function track(name, params) {
-    var g = /** @type {any} */ (window).gtag;
-    if (typeof g === 'function') { g('event', name, params); }
+    var w = /** @type {any} */ (window);
+    if (!ownGtag && typeof w.gtag === 'function') { w.gtag('event', name, params); return; }
+    if (!CONFIG.ga4MeasurementId) { return; }
+    var dl = w.dataLayer = w.dataLayer || [];
+    /** @type {Record<string, string>} */ var evt = { event: name };
+    Object.keys(params).forEach(function (k) { evt['twg_' + k] = params[k]; });
+    dl.push(evt);
+    if (!ownGtag) {
+      ownGtag = true;
+      w.gtag = function () { dl.push(arguments); };
+      var tag = document.createElement('script');
+      tag.async = true;
+      tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(CONFIG.ga4MeasurementId);
+      tag.onerror = function () { /* events stay in dataLayer only */ };
+      (document.head || document.documentElement).appendChild(tag);
+      w.gtag('js', new Date());
+      w.gtag('config', CONFIG.ga4MeasurementId, { send_page_view: false });
+    }
+    w.gtag('event', name, params);
   }
 
   // ---------- three.js: prefetch on idle after load, so first paint is untouched ----------

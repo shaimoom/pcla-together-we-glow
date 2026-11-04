@@ -425,15 +425,16 @@
    ======================================================================== */
 @supports (color: color-mix(in srgb, red, blue)) {
   .twg-takeover {
-    --twg-ink: color-mix(in srgb, var(--twg-white) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
-    --twg-ink-soft: color-mix(in srgb, var(--twg-off-white) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
+    /* The crossing ink is the PCLA navy (Shai: "the PCLA navy and not black"): 4.5:1 on the pink, about 6.9:1 on the pale center */
+    --twg-ink: color-mix(in srgb, var(--twg-white) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy));
+    --twg-ink-soft: color-mix(in srgb, var(--twg-off-white) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy));
     --twg-halo-fade: calc((1 - var(--twg-text-mix)) * 100%);
     /* At full pink the buttons go to the site's blue-light with navy-dark text, so they read as one family against the pink */
     --twg-button-surface: color-mix(in srgb, var(--twg-pink) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-blue-light));
-    --twg-button-ink: color-mix(in srgb, var(--twg-navy) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
+    --twg-button-ink: var(--twg-navy);
     --twg-pill-surface: color-mix(in srgb, color-mix(in srgb, var(--twg-navy-dark) 70%, transparent) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-blue-light));
-    --twg-pill-ink: color-mix(in srgb, var(--twg-white) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
-    --twg-pill-border: color-mix(in srgb, var(--twg-white-30) calc((1 - var(--twg-text-mix)) * 100%), color-mix(in srgb, var(--twg-navy-dark) 65%, transparent));   /* a visible keyline on the pink */
+    --twg-pill-ink: color-mix(in srgb, var(--twg-white) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy));
+    --twg-pill-border: color-mix(in srgb, var(--twg-white-30) calc((1 - var(--twg-text-mix)) * 100%), color-mix(in srgb, var(--twg-navy) 70%, transparent));   /* a visible keyline on the pink */
     /* The living light, one definition shared by WE GLOW and Donate Today: three large, soft, low-contrast blobs of white
        at low opacity, breathing very slowly over a base color each element supplies (electric blue for the word, pink for
        the button). A lava lamp seen from across the room: noticed on a second look. */
@@ -481,13 +482,18 @@
       0 0 0.35em color-mix(in srgb, var(--twg-white-30) var(--twg-halo-fade), transparent),
       0 0 1.1em color-mix(in srgb, var(--twg-white-10) var(--twg-halo-fade), transparent);
   }
+  /* At full pink WE GLOW keeps glowing (Shai): the word crosses to white-hot with the living light still running and a
+     soft white bloom. White on the pink is 3.5:1, large text. The blue look before the flip is unchanged */
   .twg-takeover_title .is-line-2 {
-    --twg-word-base: color-mix(in srgb, var(--twg-blue) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
+    --twg-word-base: color-mix(in srgb, var(--twg-blue) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-white));
     color: var(--twg-word-base);
     text-shadow:
       0 0 0.3em color-mix(in srgb, var(--twg-blue) calc(var(--twg-halo-fade) * 0.7), transparent),
       0 0 0.9em color-mix(in srgb, var(--twg-blue) calc(var(--twg-halo-fade) * 0.4), transparent),
-      0 0 1.8em color-mix(in srgb, var(--twg-blue) calc(var(--twg-halo-fade) * 0.22), transparent);
+      0 0 1.8em color-mix(in srgb, var(--twg-blue) calc(var(--twg-halo-fade) * 0.22), transparent),
+      0 0 0.3em color-mix(in srgb, var(--twg-white) calc(var(--twg-text-mix) * 45%), transparent),
+      0 0 0.9em color-mix(in srgb, var(--twg-white) calc(var(--twg-text-mix) * 30%), transparent),
+      0 0 1.8em color-mix(in srgb, var(--twg-white) calc(var(--twg-text-mix) * 18%), transparent);
   }
   .twg-takeover_light {
     color: var(--twg-word-base);
@@ -495,8 +501,7 @@
     background-image: var(--twg-organism);
     background-size: 180% 180%, 170% 170%, 200% 200%;
     background-position: 0% 0%, 100% 100%, 50% 100%;
-    animation: twg-organism 32s ease-in-out infinite alternate;
-    opacity: calc(1 - var(--twg-text-mix));   /* the living light fades as the word crosses to navy-dark on the swell */
+    animation: twg-organism 32s ease-in-out infinite alternate;   /* the living light keeps running through the swell */
   }
   .twg-takeover_belief {
     color: var(--twg-ink-soft);
@@ -515,7 +520,7 @@
     color: var(--twg-button-ink);
     box-shadow:
       0 0 1.75rem color-mix(in srgb, var(--twg-pink) calc(var(--twg-halo-fade) * 0.4), transparent),
-      0 0 0 0.125rem color-mix(in srgb, var(--twg-navy-dark) calc(var(--twg-text-mix) * 100%), transparent);   /* a keyline on full pink */
+      0 0 0 0.125rem color-mix(in srgb, var(--twg-navy) calc(var(--twg-text-mix) * 100%), transparent);   /* a keyline on full pink */
     animation: twg-organism 32s ease-in-out infinite alternate;
   }
   /* The energy glow: a second, bigger bloom that fades in with --twg-energy (opacity only, no layout) */
@@ -537,7 +542,7 @@
     border-color: var(--twg-blue-light);
     box-shadow:
       0 0 2.25rem color-mix(in srgb, var(--twg-pink) calc(var(--twg-halo-fade) * 0.55), transparent),
-      0 0 0 0.125rem color-mix(in srgb, var(--twg-navy-dark) calc(var(--twg-text-mix) * 100%), transparent);
+      0 0 0 0.125rem color-mix(in srgb, var(--twg-navy) calc(var(--twg-text-mix) * 100%), transparent);
   }
   .twg-takeover_secondary {
     color: var(--twg-ink);

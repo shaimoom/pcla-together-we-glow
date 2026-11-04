@@ -28,6 +28,8 @@ Built by Shai Creates for Parkinson's Community Los Angeles. One classic script,
 
 Photos are part of the release: a new tag serves `photos/` at that tag too, so adding or swapping a photo is a commit, a tag, and a file name change in the embed's list.
 
+This first release is pinned by commit SHA (`@cb17d9f7688aeb78917cb88929dbca7102de2696` in the three embed URLs) because the `v1.0.0` tag was not cut through the release UI; jsDelivr treats a commit SHA as immutable, exactly like a tag. A `v1.0.0` tag may be added to that commit at any time and the three URLs switched to `@v1.0.0` when convenient; both forms stay valid forever on jsDelivr.
+
 Purge note: a tagged jsDelivr URL is cached for a year and treated as permanent. Never move a tag to a new commit; cut a new tag instead. If a file must be refreshed under the same tag anyway, purge it at `https://purge.jsdelivr.net/gh/shaimoom/pcla-together-we-glow@v1.0.0/twg-takeover.min.js` (and the `.css`), then wait a few minutes. Browsers may hold their own copy until it expires.
 
 ## How to roll back
