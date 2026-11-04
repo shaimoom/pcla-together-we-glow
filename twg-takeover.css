@@ -1,0 +1,564 @@
+/* ==========================================================================
+   PCLA "Together We Glow" full-screen takeover. Styles.
+   --------------------------------------------------------------------------
+   Every color, radius and type family below is a pcla.org Webflow Variable,
+   read from the published stylesheet (pcla2025.webflow.shared.1ad8ee1ef.min.css)
+   on Tuesday, November 3, 2026. The custom property names are the site's own,
+   so this file maps 1:1 to existing Variables and adds none. On pcla.org the
+   Variables are already on :root. The review mockup (index.html) declares the
+   same values on :root so the file renders the same way there.
+
+   Type sizes reuse the site's own heading and text classes, by value:
+     display-heading-2  3.75rem / 3.25rem (991) / 3rem (479)
+     heading-style-h2   3rem / 2.75rem (991) / 2.25rem (767)
+     heading-style-h3   2.5rem / 2.25rem (991) / 2rem (767)
+     text-size-large    1.25rem / 1.125rem (767)
+     text-size-medium   1.125rem / 1rem (767)
+     button.is-large    1.25rem, weight 700
+   Breakpoints are the site's: 991, 767, 479.
+
+   Browser support: every rule that needs color-mix() sits inside the
+   @supports block at the end; the rules before it are the plain fallback
+   (Safari 16.0 and 16.1 and older), which keeps every button its surface,
+   boundary and contrast with the Variables alone.
+   ========================================================================== */
+
+.twg-takeover {
+  /* Local aliases. Each one points at a pcla.org Variable, nothing is new. */
+  --twg-navy: var(--_primitives---brand--navy);
+  --twg-navy-dark: var(--_primitives---brand--navy-dark);
+  --twg-blue: var(--_primitives---brand--blue);
+  --twg-blue-light: var(--_primitives---brand--blue-light);
+  --twg-pink: var(--_primitives---brand--pink);
+  --twg-pink-dark: var(--_primitives---brand--pink-dark);
+  --twg-pink-light: var(--_primitives---brand--pink-light);
+  --twg-yellow: var(--_primitives---brand--yellow);
+  --twg-yellow-light: var(--_primitives---brand--yellow-light);
+  --twg-white: var(--_primitives---colors--white);
+  --twg-off-white: var(--_primitives---brand--off-white);
+  --twg-white-10: var(--_primitives---opacity--white-10);
+  --twg-white-20: var(--_primitives---opacity--white-20);
+  --twg-white-30: var(--_primitives---opacity--white-30);
+  --twg-white-40: var(--_primitives---opacity--white-40);
+  --twg-radius: var(--_ui-styles---radius--xlarge);
+  --twg-font-heading: var(--_typography---font-styles--heading);
+  --twg-font-body: var(--_typography---font-styles--body);
+  --twg-ease: cubic-bezier(0.22, 1, 0.36, 1);   /* the site's fade curve */
+  --twg-energy: 0;      /* 0 to 1, set by the script as the pointer nears "Donate Today" */
+  --twg-glow-x: 50vw;   /* the button's center, set by the script */
+  --twg-glow-y: 70vh;
+  --twg-swell: 0;       /* 0 to 1, a held hover on the button: the pink takes over the viewport */
+  --twg-text-mix: 0;    /* 0 or 1, set by the script once the solid pink has reached the lockup: text crosses to navy-dark */
+  --twg-swell-opacity: 0;   /* set by the script with the crossing: held at 0.38 before it, 0.85 to 0.94 after */
+
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  box-sizing: border-box;
+  color: var(--twg-white);
+  font-family: var(--twg-font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  background-color: var(--twg-navy-dark);
+  -webkit-font-smoothing: antialiased;
+}
+.twg-takeover:focus { outline: none; }   /* the root (the dialog) takes programmatic focus only; every control keeps its ring */
+.twg-takeover *,
+.twg-takeover *::before,
+.twg-takeover *::after { box-sizing: inherit; }
+
+/* ---------- Background: one navy surface, with the WebGL-missing fallback built in ---------- */
+.twg-takeover_backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(120% 90% at 50% 55%, var(--twg-navy) 0%, var(--twg-navy-dark) 72%);
+}
+.twg-takeover_scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 900ms var(--twg-ease);
+}
+.twg-takeover_scene.is-ready { opacity: 1; }
+.twg-takeover_scene canvas { display: block; width: 100%; height: 100%; }
+
+/* A soft darkening behind the lockup so the type reads over passing light. Not a box: no edge, no fill. */
+.twg-takeover_veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(38% 46% at 50% 50%, var(--twg-navy-dark) 0%, transparent 100%);
+  opacity: calc((1 - var(--twg-energy) * 0.85) * 0.62);   /* lifts as the photos gather, so the stack reads */
+}
+
+/* Glow: a soft bloom behind "Donate Today", white to pink to nothing, no spokes, no rotation. Under the dialog layer so
+   it is never over the label. The script places it at the button's center; its radius and brightness follow
+   --twg-energy (transform and opacity only). */
+.twg-takeover_glow {
+  position: absolute;
+  left: var(--twg-glow-x);
+  top: var(--twg-glow-y);
+  z-index: 2;
+  width: 40rem;
+  height: 40rem;
+  margin: -20rem 0 0 -20rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, var(--twg-pink) 0%, transparent 100%);
+  opacity: calc(var(--twg-energy) * 0.85);
+  transform: scale(calc(0.2 + 0.8 * var(--twg-energy)));
+  will-change: transform, opacity;
+}
+/* Swell: a held hover on the button. The same soft pink, as a disc three viewports wide centered on the button, growing
+   from nothing to the whole page over swellSeconds (eased in the script). Solid to 62% of its radius, soft to the edge.
+   Its opacity is the script's --twg-swell-opacity: held at 0.38 while the text keeps its resting inks, 0.85 rising to 0.94 once the text
+   has crossed to navy-dark, so no frame shows either ink on a pink it cannot clear. Under the dialog layer; the photos
+   and orbs show through at reduced strength. */
+.twg-takeover_swell {
+  position: absolute;
+  left: var(--twg-glow-x);
+  top: var(--twg-glow-y);
+  z-index: 2;
+  width: 300vmax;
+  height: 300vmax;
+  margin: -150vmax 0 0 -150vmax;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, var(--twg-pink) 0%, var(--twg-pink) 62%, transparent 100%);
+  opacity: min(var(--twg-swell-opacity), 0.38);   /* without color-mix() the inks never cross, so the pink never passes 0.38 */
+  transform: scale(calc(0.04 + 0.96 * var(--twg-swell)));
+  will-change: transform, opacity;
+}
+
+/* ---------- Dialog layer: a scroll container with an inner block ---------- */
+/* The inner block carries margin auto: centered when there is room, and scrollable from its top when there is not
+   (landscape phones, short laptop windows). Nothing is ever centered out of reach. */
+.twg-takeover_dialog {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4.5rem 5% 2.5rem;                 /* padding-global sides; room for Close and Pause motion at the top */
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.twg-takeover_inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: auto;
+  flex-shrink: 0;
+}
+
+.twg-takeover_logo {
+  display: block;
+  width: 9.25rem;
+  height: auto;
+  margin: 0 auto 1.25rem;
+  color: var(--twg-white);
+  filter: drop-shadow(0 0 1.25rem var(--twg-white-20));
+}
+.twg-takeover_logo svg { display: block; width: 100%; height: auto; }
+
+.twg-takeover_title {
+  margin: 0;
+  font-family: var(--twg-font-heading);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.twg-takeover_title > span { display: block; }
+.twg-takeover_title .is-line-1,
+.twg-takeover_title .is-line-2 { font-size: 3.75rem; }                        /* display-heading-2 */
+.twg-takeover_title .is-line-3 { font-size: 3rem; letter-spacing: 0.06em; }   /* heading-style-h2 */
+.twg-takeover_title .is-line-1,
+.twg-takeover_title .is-line-3 {
+  color: var(--twg-white);
+  text-shadow: 0 0 0.35em var(--twg-white-30), 0 0 1.1em var(--twg-white-10);
+}
+/* WE GLOW: the ribbons' electric blue (the brand blue Variable) with white-hot highlights, a living gradient inside the
+   letters and a bloom outside them in the same blue, so the word and the rings read as one light. */
+.twg-takeover_title .is-line-2 {
+  position: relative;
+  color: var(--twg-blue);
+  text-shadow: 0 0 0.3em var(--twg-blue);
+}
+/* The living gradient rides on a real copy of the word (aria-hidden, translated with the word), clipped to the glyphs */
+.twg-takeover_light {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: var(--twg-blue);
+  text-shadow: none;
+  background-color: var(--twg-blue);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  pointer-events: none;
+  user-select: none;
+}
+/* One cycle is 32 seconds each way, shared by the word and the button: a slow breathing of light, not a sweep */
+@keyframes twg-organism {
+  0%   { background-position: 0% 0%, 100% 100%, 50% 100%; }
+  33%  { background-position: 70% 80%, 20% 30%, 10% 50%; }
+  66%  { background-position: 100% 20%, 50% 100%, 90% 60%; }
+  100% { background-position: 20% 100%, 90% 0%, 40% 10%; }
+}
+
+.twg-takeover_belief {
+  max-width: 40rem;
+  margin: 1.5rem 0 0;                         /* margin-small */
+  font-size: 1.25rem;                         /* text-size-large */
+  line-height: 1.5;
+  color: var(--twg-off-white);
+  text-wrap: balance;
+  text-shadow: 0 0 0.6em var(--twg-navy-dark);   /* keeps the line readable when a photo or orb passes behind it */
+}
+
+.twg-takeover_headline {
+  margin: 2rem 0 0;                           /* margin-medium */
+  font-family: var(--twg-font-heading);
+  font-size: 2.5rem;                          /* heading-style-h3 */
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--twg-white);
+  text-wrap: balance;
+  text-shadow: 0 0 0.5em var(--twg-navy-dark);
+}
+
+.twg-takeover_actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;                         /* margin-small */
+}
+
+/* The site's button recipe (.button.is-large) with the same living light as WE GLOW inside it (the shared --twg-organism
+   over a pink base). The label is navy so it reads on every color the light passes through. At full pink the pill
+   crosses to blue-light with a navy-dark label and a navy-dark keyline (inside @supports). */
+.twg-takeover_button {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  min-height: 2.75rem;
+  padding: 0.75rem 2rem;
+  border: 1px solid var(--twg-pink);
+  border-radius: var(--twg-radius);
+  background-color: var(--twg-pink);
+  color: var(--twg-navy);
+  font-family: var(--twg-font-body);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.twg-takeover_button:hover { border-color: var(--twg-blue-light); }
+
+/* "Not Right Now": a clear text button, same font, 44px tap target, underline in the text color */
+.twg-takeover_secondary {
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border: 0;
+  background: transparent;
+  color: var(--twg-white);
+  font-family: var(--twg-font-body);
+  font-size: 1.125rem;                        /* text-size-medium */
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 0.0625rem;
+  text-underline-offset: 0.3em;
+  text-shadow: 0 0 0.6em var(--twg-navy-dark);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.twg-takeover_secondary:hover { opacity: 0.8; }
+
+/* Pause motion and Close, together at the top right on their own layer above the scroll container, so they never
+   scroll away and never sit over the lockup: navy pills with white text, 44px tall, always visible */
+.twg-takeover_controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.twg-takeover_close,
+.twg-takeover_motion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--twg-white-30);
+  border-radius: var(--twg-radius);
+  background-color: var(--twg-navy);
+  color: var(--twg-white);
+  font-family: var(--twg-font-body);
+  font-size: 1rem;                            /* text-size-regular */
+  font-weight: 600;
+  line-height: 1.5;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(0.5rem);
+  backdrop-filter: blur(0.5rem);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.twg-takeover_close:hover,
+.twg-takeover_motion:hover { border-color: var(--twg-white-40); }
+.twg-takeover_close { padding-right: 0.75rem; }
+.twg-takeover_close .twg-takeover_icon {
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.twg-takeover_close .twg-takeover_icon svg { width: 100%; height: 100%; }
+.twg-takeover_motion .twg-takeover_icon { display: inline-flex; width: 1rem; height: 1rem; }
+.twg-takeover_motion .twg-takeover_icon svg { width: 100%; height: 100%; }
+.twg-takeover_motion.is-paused .is-pause,
+.twg-takeover_motion:not(.is-paused) .is-play { display: none; }
+
+/* Focus: white ring at rest, 3:1 or better on navy; it crosses to navy-dark with the text at full pink (inside @supports) */
+.twg-takeover a:focus-visible,
+.twg-takeover button:focus-visible {
+  outline: 0.1875rem solid var(--twg-white);
+  outline-offset: 0.1875rem;
+}
+
+/* Screen-reader-only text (the status line, the "opens in a new tab" cue) */
+.twg-takeover_sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Entrance and exit ---------- */
+/* The site's own fade keyframe. /give does not load the site's fade code, so this file carries an identical copy. */
+@keyframes pcla-fade-up {
+  from { opacity: 0; transform: translate3d(0, 1rem, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes twg-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.twg-takeover_stagger { --twg-delay: 0ms; }
+@media screen and (prefers-reduced-motion: no-preference) {
+  .twg-takeover.is-open { animation: twg-fade 600ms var(--twg-ease) both; }
+  .twg-takeover.is-open .twg-takeover_stagger { animation: pcla-fade-up 600ms var(--twg-ease) var(--twg-delay) both; }
+  .twg-takeover.is-closing { animation: twg-fade 200ms ease-in reverse both; }
+}
+@media screen and (prefers-reduced-motion: reduce) {
+  .twg-takeover_scene { transition: none; }
+  .twg-takeover_light,
+  .twg-takeover_button { animation: none; }
+}
+/* The script adds is-still for reduced motion (and while motion is paused): the living gradients hold still too */
+.twg-takeover.is-still .twg-takeover_light,
+.twg-takeover.is-still .twg-takeover_button { animation: none; }
+
+/* ---------- Breakpoints (the site's) ---------- */
+@media screen and (max-width: 991px) {
+  .twg-takeover_title .is-line-1,
+  .twg-takeover_title .is-line-2 { font-size: 3.25rem; }
+  .twg-takeover_title .is-line-3 { font-size: 2.75rem; }
+  .twg-takeover_headline { font-size: 2.25rem; }
+}
+@media screen and (max-width: 767px) {
+  .twg-takeover_dialog { padding-top: 4.5rem; padding-bottom: 2rem; }
+  .twg-takeover_logo { width: 7.5rem; margin-bottom: 1rem; }
+  .twg-takeover_title .is-line-3 { font-size: 2.25rem; }
+  .twg-takeover_belief { margin-top: 1.25rem; font-size: 1.125rem; }
+  .twg-takeover_headline { margin-top: 1.5rem; font-size: 2rem; }
+  .twg-takeover_secondary { font-size: 1rem; }
+  .twg-takeover_actions { width: 100%; }
+  .twg-takeover_button { width: 100%; max-width: 20rem; }
+  .twg-takeover_veil { background: radial-gradient(70% 46% at 50% 50%, var(--twg-navy-dark) 0%, transparent 100%); }
+}
+@media screen and (max-width: 479px) {
+  .twg-takeover_logo { width: 6.5rem; }
+  .twg-takeover_title .is-line-1,
+  .twg-takeover_title .is-line-2 { font-size: 3rem; }
+  .twg-takeover_title .is-line-3 { font-size: 2rem; }
+  .twg-takeover_headline { font-size: 1.75rem; }
+  .twg-takeover_controls { top: 0.75rem; right: 0.75rem; gap: 0.375rem; }
+  .twg-takeover_close,
+  .twg-takeover_motion { padding-left: 0.75rem; padding-right: 0.75rem; }
+}
+/* Short viewports at any width (a phone on its side, a laptop window with a bookmarks bar): a tighter vertical rhythm,
+   and the inner block scrolls from its top if it still does not fit, with the controls fixed above it */
+@media screen and (max-height: 720px) {
+  .twg-takeover_dialog { padding-top: 4.25rem; padding-bottom: 1.5rem; }
+  .twg-takeover_logo { width: 5.5rem; margin-bottom: 0.75rem; }
+  .twg-takeover_title .is-line-1,
+  .twg-takeover_title .is-line-2 { font-size: 2.5rem; }
+  .twg-takeover_title .is-line-3 { font-size: 1.75rem; }
+  .twg-takeover_belief { margin-top: 0.75rem; font-size: 1rem; }
+  .twg-takeover_headline { margin-top: 1rem; font-size: 1.5rem; }
+  .twg-takeover_actions { margin-top: 1rem; gap: 0.25rem; }
+}
+
+/* ========================================================================
+   color-mix() layer. Everything below needs color-mix(); browsers without
+   it keep the plain rules above (Safari 16.0 and 16.1 and older).
+   ======================================================================== */
+@supports (color: color-mix(in srgb, red, blue)) {
+  .twg-takeover {
+    --twg-ink: color-mix(in srgb, var(--twg-white) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
+    --twg-ink-soft: color-mix(in srgb, var(--twg-off-white) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
+    --twg-halo-fade: calc((1 - var(--twg-text-mix)) * 100%);
+    /* At full pink the buttons go to the site's blue-light with navy-dark text, so they read as one family against the pink */
+    --twg-button-surface: color-mix(in srgb, var(--twg-pink) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-blue-light));
+    --twg-button-ink: color-mix(in srgb, var(--twg-navy) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
+    --twg-pill-surface: color-mix(in srgb, color-mix(in srgb, var(--twg-navy-dark) 70%, transparent) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-blue-light));
+    --twg-pill-ink: color-mix(in srgb, var(--twg-white) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
+    --twg-pill-border: color-mix(in srgb, var(--twg-white-30) calc((1 - var(--twg-text-mix)) * 100%), color-mix(in srgb, var(--twg-navy-dark) 65%, transparent));   /* a visible keyline on the pink */
+    /* The living light, one definition shared by WE GLOW and Donate Today: three large, soft, low-contrast blobs of white
+       at low opacity, breathing very slowly over a base color each element supplies (electric blue for the word, pink for
+       the button). A lava lamp seen from across the room: noticed on a second look. */
+    --twg-organism:
+      radial-gradient(60% 75% at 30% 40%, color-mix(in srgb, var(--twg-white) 26%, transparent) 0%, color-mix(in srgb, var(--twg-white) 10%, transparent) 45%, transparent 80%),
+      radial-gradient(55% 80% at 72% 62%, color-mix(in srgb, var(--twg-white) 20%, transparent) 0%, transparent 75%),
+      radial-gradient(70% 90% at 50% 100%, color-mix(in srgb, var(--twg-blue-light) 18%, transparent) 0%, transparent 72%);
+  }
+  .twg-takeover_backdrop {
+    background:
+      radial-gradient(42% 38% at 8% 12%, color-mix(in srgb, var(--twg-blue) 38%, transparent) 0%, transparent 100%),
+      radial-gradient(36% 46% at 94% 30%, color-mix(in srgb, var(--twg-blue) 30%, transparent) 0%, transparent 100%),
+      radial-gradient(44% 30% at 80% 96%, color-mix(in srgb, var(--twg-blue-light) 22%, transparent) 0%, transparent 100%),
+      radial-gradient(30% 26% at 18% 88%, color-mix(in srgb, var(--twg-blue) 20%, transparent) 0%, transparent 100%),
+      radial-gradient(120% 90% at 50% 55%, var(--twg-navy) 0%, var(--twg-navy-dark) 72%);
+  }
+  .twg-takeover_veil {
+    background: radial-gradient(38% 46% at 50% 50%, color-mix(in srgb, var(--twg-navy-dark) 62%, transparent) 0%, transparent 100%);
+    opacity: calc(1 - var(--twg-energy) * 0.85);
+  }
+  .twg-takeover_glow {
+    background: radial-gradient(closest-side,
+      color-mix(in srgb, var(--twg-white) 55%, var(--twg-pink)) 0%,
+      color-mix(in srgb, var(--twg-pink) 55%, transparent) 18%,
+      color-mix(in srgb, var(--twg-pink) 22%, transparent) 42%,
+      transparent 100%);
+  }
+  .twg-takeover_swell {
+    opacity: var(--twg-swell-opacity);
+    background: radial-gradient(closest-side,
+      color-mix(in srgb, var(--twg-white) 30%, var(--twg-pink)) 0%,
+      var(--twg-pink) 35%,
+      var(--twg-pink) 62%,
+      color-mix(in srgb, var(--twg-pink) 60%, transparent) 80%,
+      transparent 100%);
+  }
+  .twg-takeover_logo {
+    color: var(--twg-ink);
+    filter: drop-shadow(0 0 1.25rem color-mix(in srgb, var(--twg-white-20) var(--twg-halo-fade), transparent));
+  }
+  .twg-takeover_title .is-line-1,
+  .twg-takeover_title .is-line-3 {
+    color: var(--twg-ink);
+    text-shadow:
+      0 0 0.35em color-mix(in srgb, var(--twg-white-30) var(--twg-halo-fade), transparent),
+      0 0 1.1em color-mix(in srgb, var(--twg-white-10) var(--twg-halo-fade), transparent);
+  }
+  .twg-takeover_title .is-line-2 {
+    --twg-word-base: color-mix(in srgb, var(--twg-blue) calc((1 - var(--twg-text-mix)) * 100%), var(--twg-navy-dark));
+    color: var(--twg-word-base);
+    text-shadow:
+      0 0 0.3em color-mix(in srgb, var(--twg-blue) calc(var(--twg-halo-fade) * 0.7), transparent),
+      0 0 0.9em color-mix(in srgb, var(--twg-blue) calc(var(--twg-halo-fade) * 0.4), transparent),
+      0 0 1.8em color-mix(in srgb, var(--twg-blue) calc(var(--twg-halo-fade) * 0.22), transparent);
+  }
+  .twg-takeover_light {
+    color: var(--twg-word-base);
+    background-color: var(--twg-word-base);
+    background-image: var(--twg-organism);
+    background-size: 180% 180%, 170% 170%, 200% 200%;
+    background-position: 0% 0%, 100% 100%, 50% 100%;
+    animation: twg-organism 32s ease-in-out infinite alternate;
+    opacity: calc(1 - var(--twg-text-mix));   /* the living light fades as the word crosses to navy-dark on the swell */
+  }
+  .twg-takeover_belief {
+    color: var(--twg-ink-soft);
+    text-shadow: 0 0 0.6em color-mix(in srgb, var(--twg-navy-dark) var(--twg-halo-fade), transparent);
+  }
+  .twg-takeover_headline {
+    color: var(--twg-ink);
+    text-shadow: 0 0 0.5em color-mix(in srgb, var(--twg-navy-dark) var(--twg-halo-fade), transparent);
+  }
+  .twg-takeover_button {
+    border-color: var(--twg-button-surface);
+    background-color: var(--twg-button-surface);
+    background-image: var(--twg-organism);
+    background-size: 180% 180%, 170% 170%, 200% 200%;
+    background-position: 0% 0%, 100% 100%, 50% 100%;
+    color: var(--twg-button-ink);
+    box-shadow:
+      0 0 1.75rem color-mix(in srgb, var(--twg-pink) calc(var(--twg-halo-fade) * 0.4), transparent),
+      0 0 0 0.125rem color-mix(in srgb, var(--twg-navy-dark) calc(var(--twg-text-mix) * 100%), transparent);   /* a keyline on full pink */
+    animation: twg-organism 32s ease-in-out infinite alternate;
+  }
+  /* The energy glow: a second, bigger bloom that fades in with --twg-energy (opacity only, no layout) */
+  .twg-takeover_button::after {
+    content: '';
+    position: absolute;
+    inset: -0.2rem;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: var(--twg-energy);
+    box-shadow:
+      0 0 2rem 0.25rem color-mix(in srgb, var(--twg-pink) 40%, transparent),
+      0 0 4rem 0.75rem color-mix(in srgb, var(--twg-blue-light) 16%, transparent);
+  }
+  /* Hover: the site recipe darkens to pink-dark, which here would fight the energy glow at the brightest moment.
+     On this piece the pointer arriving is the glow itself, so hover brightens the rim instead. The keyline stays. */
+  .twg-takeover_button:hover {
+    border-color: var(--twg-blue-light);
+    box-shadow:
+      0 0 2.25rem color-mix(in srgb, var(--twg-pink) calc(var(--twg-halo-fade) * 0.55), transparent),
+      0 0 0 0.125rem color-mix(in srgb, var(--twg-navy-dark) calc(var(--twg-text-mix) * 100%), transparent);
+  }
+  .twg-takeover_secondary {
+    color: var(--twg-ink);
+    text-shadow: 0 0 0.6em color-mix(in srgb, var(--twg-navy-dark) var(--twg-halo-fade), transparent);
+  }
+  .twg-takeover_close,
+  .twg-takeover_motion {
+    border-color: var(--twg-pill-border);
+    background-color: var(--twg-pill-surface);
+    color: var(--twg-pill-ink);
+  }
+  .twg-takeover_close:hover,
+  .twg-takeover_motion:hover {
+    border-color: var(--twg-white-40);
+    background-color: color-mix(in srgb, var(--twg-pill-surface) 85%, var(--twg-white));
+  }
+  /* The focus ring crosses with the text: white on navy at rest, navy-dark on the pink and the blue-light pills at full */
+  .twg-takeover a:focus-visible,
+  .twg-takeover button:focus-visible { outline-color: var(--twg-ink); }
+  .twg-takeover_veil { opacity: calc(1 - var(--twg-energy) * 0.85); }
+  @media screen and (max-width: 767px) {
+    .twg-takeover_veil { background: radial-gradient(70% 46% at 50% 50%, color-mix(in srgb, var(--twg-navy-dark) 62%, transparent) 0%, transparent 100%); }
+  }
+}
